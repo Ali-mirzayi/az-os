@@ -37,3 +37,5 @@ function roundRobin(processes, timeQuantum) {
   
   console.log(completedProcesses);
   console.log("Execution Order: " + executionOrder.join(", "));
+
+  //sjf ,, fcfs
