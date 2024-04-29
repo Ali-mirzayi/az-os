@@ -9,23 +9,29 @@ function FIFO() {
       tasks.sort((a, b) => a.arrivalTime - b.arrivalTime);
   }
 
-  function processTasks() {
-      let currentTime = 0;
-      let executionOrder = [];
-      while (tasks.length > 0) {
-          const currentTask = tasks.shift();
-          const startTime = Math.max(currentTime, currentTask.arrivalTime);
-          const waitingTime = startTime - currentTask.arrivalTime;
-          const endTime = startTime + currentTask.duration;
-          executionOrder.push(currentTask.task);
-          console.log(`Task "${currentTask.task}" started at ${startTime} and ended at ${endTime}. Waiting time: ${waitingTime}`);
-          totalWaitingTime += waitingTime;
-          taskCount++;
-          currentTime = endTime;
-      }
-      console.log("Execution Order: " + executionOrder.join(", "));
-      console.log("Average Waiting Time: " + (totalWaitingTime / taskCount).toFixed(2));
-  }
+function processTasks() {
+    let currentTime = 0;
+    let executionOrder = [];
+    const turnAroundTimes = [];
+
+    while (tasks.length > 0) {
+        const currentTask = tasks.shift();
+        const startTime = Math.max(currentTime, currentTask.arrivalTime);
+        const waitingTime = startTime - currentTask.arrivalTime;
+        const endTime = startTime + currentTask.duration;
+        const turnAroundTime = endTime - currentTask.arrivalTime;
+        executionOrder.push(currentTask.task);
+        turnAroundTimes.push(turnAroundTime);
+        console.log(`Task "${currentTask.task}" started at ${startTime} and ended at ${endTime}. Waiting time: ${waitingTime}, Turn-around time: ${turnAroundTime}`);
+        totalWaitingTime += waitingTime;
+        taskCount++;
+        currentTime = endTime;
+    }
+
+    console.log("Execution Order: " + executionOrder.join(", "));
+    console.log("Average Waiting Time: " + (totalWaitingTime / taskCount).toFixed(2));
+    console.log("Average Turn-around Time: " + (turnAroundTimes.reduce((sum, time) => sum + time, 0) / taskCount).toFixed(2));
+}
 
   return {
       addTask,
